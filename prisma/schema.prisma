@@ -1,0 +1,37 @@
+generator client {
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native"]
+  previewFeatures = ["interactiveTransactions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int              @id @default(autoincrement())
+  email          String           @unique
+  password       String
+  name           String
+  profilePicture String?
+  age            Int
+  workExperience WorkExperience[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @default(now()) @updatedAt
+}
+
+//create workexperience table with user id as foreign key
+model WorkExperience {
+  id          Int       @id @default(autoincrement())
+  company     String
+  companyLogo String?
+  startDate   DateTime
+  endDate     DateTime?
+  jobTitle    String
+  description String?
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+}

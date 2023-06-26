@@ -1,0 +1,70 @@
+type User {
+  id: Int!
+  name: String!
+  profilePicture: String
+  email: String
+  password: String
+  age: Int!
+  workExperience: [WorkExperience]
+}
+
+type WorkExperience {
+  id: Int!
+  userId: Int!
+  company: String!
+  companyLogo: String
+  startDate: String!
+  endDate: String
+  jobTitle: String!
+  description: String
+}
+
+type Query {
+  getUser(id: Int): User!
+  getAllUsers: [User]!
+  getExperience(id: Int!): WorkExperience!
+  getAllExperiences: [WorkExperience]!
+}
+
+type LoginResult {
+  user: User!
+  token: String!
+}
+
+scalar Upload
+
+type Mutation {
+  createUser(name: String!, email: String!, password: String!, age: Int!): User!
+  updateUser(
+    id: Int!
+    name: String!
+    email: String
+    password: String
+    age: Int!
+    profilePicture: String
+  ): User!
+  deleteUser(id: Int!): User!
+  createExperience(
+    userId: Int!
+    company: String!
+    companyLogo: String
+    startDate: String!
+    endDate: String
+    jobTitle: String!
+    description: String
+  ): WorkExperience!
+  updateExperience(
+    id: Int!
+    userId: Int!
+    company: String!
+    companyLogo: String
+    startDate: String!
+    endDate: String
+    jobTitle: String!
+    description: String
+  ): WorkExperience!
+  deleteExperience(id: Int!): WorkExperience!
+  updateProfilePicture(profilePicture: String!, id: Int!): User!
+  register(name: String!, email: String!, password: String!, age: Int!): User!
+  login(email: String!, password: String!): LoginResult!
+}

@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  app:
+    # This prevents Prisma issues on M1 macs. Issue specifically around Node Alpine images.
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: builder
+    volumes:
+      - ".:/var/app"
+    ports:
+      - "${HTTP_PORT:-8000}:${HTTP_PORT:-8000}"
+    command: sh -c "npx prisma migrate dev && npm run start:dev"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+
+  postgres:
+    image: postgres:14
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${PG_DB}
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
